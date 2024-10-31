@@ -1,4 +1,4 @@
-from practica1.clases import Segmento
+from practica1.clases.Segmento import Segmento
 
 
 class Accion:
