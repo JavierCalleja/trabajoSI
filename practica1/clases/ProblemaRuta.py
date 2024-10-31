@@ -8,6 +8,8 @@ class ProblemaRuta:
         Inicializa el problema de búsqueda de rutas en el espacio de estados.
 
         """
+
+        ##k claves, v valores, s cada elemento en la lista segmentos
         if not isinstance(initial_state, Estado) or not isinstance(goal_state, Estado):
             raise TypeError("Los estados inicial y final deben ser instancias de la clase Estado.")
         if not isinstance(intersecciones, dict) or not all(
@@ -29,7 +31,7 @@ class ProblemaRuta:
         """
         return estado == self.goal_state
 
-    ##true si es estado objetivo
+    ##true estado objetivo
 
     def acciones_posibles(self, estado):
         """
@@ -46,7 +48,7 @@ class ProblemaRuta:
 
     def costo_accion(self, accion):
         """
-        Calcula el coste de una acción, basado en el tiempo de viaje del segmento.
+        Calcula el coste de una acción, a través del tiempo de viaje del segmento.
 
         """
         return accion.costo

@@ -9,21 +9,18 @@ class BusquedaEstrella:
         """
         Inicializa el algoritmo A* para un problema de búsqueda en el espacio de estados.
 
-        :param problema: Instancia de la clase ProblemaRuta.
         """
         if not isinstance(problema, ProblemaRuta):
             raise TypeError("El parámetro problema debe ser una instancia de la clase ProblemaRuta.")
 
         self.problema = problema
-        self.frontera = PriorityQueue()  # Utiliza una cola de prioridad para la frontera
+        self.frontera = PriorityQueue()  # cola de prioridad para la frontera
         self.explorados = set()  # Conjunto de estados explorados
 
     def heuristica(self, estado):
         """
-        Calcula la heurística para el estado dado, basada en la distancia geodésica entre la ubicación actual y el objetivo.
+        calcula la heurística para el estado dado
 
-        :param estado: Estado para el cual calcular la heurística.
-        :return: Valor de la heurística (distancia geodésica al objetivo).
         """
         return estado.current_location.distancia_geodesica(self.problema.goal_state.current_location)
 
@@ -31,7 +28,7 @@ class BusquedaEstrella:
         """
         Ejecuta el algoritmo A* para encontrar la ruta óptima desde el estado inicial al objetivo.
 
-        :return: Ruta óptima como una lista de acciones, o None si no se encuentra una ruta.
+        return: Ruta óptima como lista de acciones, o None si no hay ruta
         """
         # Nodo inicial
         nodo_inicial = Nodo(
@@ -42,24 +39,24 @@ class BusquedaEstrella:
         self.frontera.put((nodo_inicial.costo_total, nodo_inicial))
 
         while not self.frontera.empty():
-            # Extraer el nodo con el menor costo total de la frontera
+            # extraer el nodo de la frontera con el menor costo total
             _, nodo = self.frontera.get()
 
             # Si el nodo contiene el estado objetivo, reconstruir y retornar el camino
             if self.problema.es_estado_objetivo(nodo.estado):
                 return self.reconstruir_camino(nodo)
 
-            # Marcar el estado como explorado
+            # estado explorado
             self.explorados.add(nodo.estado)
 
-            # Expandir el nodo
+            # expandir nodo
             for accion in self.problema.acciones_posibles(nodo.estado):
                 estado_resultante = Estado(
                     accion.segment.destination if accion.segment.origin == nodo.estado.current_location else accion.segment.origin
                 )
                 costo_nuevo = nodo.costo_acumulado + self.problema.costo_accion(accion)
 
-                # Crear nodo hijo
+                #nodo hijo
                 nodo_hijo = Nodo(
                     estado=estado_resultante,
                     padre=nodo,
@@ -68,18 +65,15 @@ class BusquedaEstrella:
                     heuristica=self.heuristica(estado_resultante)
                 )
 
-                # Si el estado resultante no ha sido explorado o tiene un costo menor, agregar a la frontera
+                # Si estado resultante no es explorado o tiene costo menor, agregar a la frontera
                 if estado_resultante not in self.explorados:
                     self.frontera.put((nodo_hijo.costo_total, nodo_hijo))
 
-        return None  # Si no se encuentra ninguna ruta
+        return None
 
     def reconstruir_camino(self, nodo):
         """
-        Reconstruye el camino desde el estado inicial hasta el objetivo a través de los nodos padres.
-
-        :param nodo: Nodo objetivo desde el cual reconstruir el camino.
-        :return: Lista de acciones que llevan desde el estado inicial hasta el estado objetivo.
+        Reconstruye el camino desde el estado inicial al objetivo a través de los nodos padres
         """
         camino = []
         while nodo.padre is not None:
